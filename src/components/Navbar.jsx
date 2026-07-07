@@ -8,7 +8,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  // Scroll handler
+  // Scroll handler to shrink navbar height on scroll
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -35,10 +35,8 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-lg border-b border-slate-200/40 shadow-md py-3'
-          : 'bg-transparent py-6'
+      className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-slate-200/40 transition-all duration-300 ${
+        scrolled ? 'shadow-md py-3' : 'shadow-sm py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,20 +44,14 @@ const Navbar = () => {
           
           {/* Logo Section */}
           <NavLink to="/" className="flex items-center space-x-3 group">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-105 shadow-md ${
-              scrolled ? 'bg-accent text-white shadow-accent/20' : 'bg-white text-navy'
-            }`}>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-white transition-all duration-300 group-hover:scale-105 shadow-md shadow-accent/20">
               <Hammer className="h-6 w-6" />
             </div>
             <div className="flex flex-col">
-              <span className={`font-serif font-black text-xl leading-tight tracking-wide transition-colors duration-300 uppercase ${
-                scrolled ? 'text-navy group-hover:text-accent' : 'text-white group-hover:text-accent'
-              }`}>
+              <span className="font-serif font-black text-xl leading-tight tracking-wide text-navy group-hover:text-accent transition-colors duration-300 uppercase">
                 Smart Civil
               </span>
-              <span className={`text-[10px] font-sans font-bold tracking-widest uppercase mt-0.5 transition-colors ${
-                scrolled ? 'text-slate-500' : 'text-slate-350'
-              }`}>
+              <span className="text-[10px] font-sans font-bold tracking-widest uppercase mt-0.5 text-slate-500">
                 Engineering Works Ltd
               </span>
             </div>
@@ -75,9 +67,7 @@ const Navbar = () => {
                   `relative px-5 py-2 text-xs font-bold tracking-widest uppercase transition-colors duration-300 ${
                     isActive 
                       ? 'text-accent font-black' 
-                      : scrolled 
-                        ? 'text-slate-650 hover:text-navy' 
-                        : 'text-slate-200 hover:text-white'
+                      : 'text-slate-650 hover:text-navy'
                   }`
                 }
               >
@@ -99,11 +89,7 @@ const Navbar = () => {
             {/* Contact CTA */}
             <NavLink
               to="/contact"
-              className={`ml-6 flex items-center space-x-2 px-5 py-3 text-[10px] font-black tracking-widest uppercase rounded-xl transition-all duration-300 shadow-md ${
-                scrolled 
-                  ? 'bg-accent hover:bg-navy text-white hover:text-white shadow-accent/15 hover:scale-[1.02]' 
-                  : 'bg-white hover:bg-accent text-navy hover:text-white hover:scale-[1.02]'
-              }`}
+              className="ml-6 flex items-center space-x-2 px-5 py-3 text-[10px] font-black tracking-widest uppercase bg-accent hover:bg-navy text-white hover:text-white rounded-xl transition-all duration-300 shadow-md shadow-accent/15 hover:scale-[1.02]"
             >
               <Phone className="h-3.5 w-3.5" />
               <span>Get in Touch</span>
@@ -114,11 +100,7 @@ const Navbar = () => {
           <div className="flex md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`inline-flex items-center justify-center p-2.5 rounded-xl focus:outline-none transition-colors duration-150 ${
-                scrolled 
-                  ? 'text-slate-650 hover:text-navy hover:bg-slate-100' 
-                  : 'text-slate-200 hover:text-white hover:bg-white/10'
-              }`}
+              className="inline-flex items-center justify-center p-2.5 rounded-xl text-slate-650 hover:text-navy hover:bg-slate-100 focus:outline-none transition-colors duration-150"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
