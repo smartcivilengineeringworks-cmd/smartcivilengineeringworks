@@ -54,26 +54,72 @@ const Contact = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setFormStatus({ submitting: true, success: false, error: null });
 
-    setTimeout(() => {
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    
+    if (!accessKey || accessKey === 'your_access_key_here') {
+      setTimeout(() => {
+        setFormStatus({
+          submitting: false,
+          success: false,
+          error: 'Web3Forms Access Key is missing or default placeholder is used. Please check your .env file.'
+        });
+      }, 1000);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+          from_name: 'Smart Civil Engineering Works Website'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setFormStatus({
+          submitting: false,
+          success: true,
+          error: null
+        });
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: 'General Inquiry',
+          message: ''
+        });
+      } else {
+        setFormStatus({
+          submitting: false,
+          success: false,
+          error: data.message || 'Form submission failed. Please try again.'
+        });
+      }
+    } catch (err) {
       setFormStatus({
         submitting: false,
-        success: true,
-        error: null
+        success: false,
+        error: 'Network error occurred. Please verify your connection and try again.'
       });
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: 'General Inquiry',
-        message: ''
-      });
-    }, 1500);
+    }
   };
 
   return (
@@ -178,6 +224,13 @@ const Contact = () => {
                 <div className="bg-emerald-50 border border-emerald-250 p-3 rounded-lg flex items-center space-x-2.5 text-emerald-700 text-xs sm:text-sm font-semibold">
                   <CheckCircle className="h-4.5 w-4.5 text-emerald-600 shrink-0" />
                   <span>Your message was sent successfully! We will get back to you shortly.</span>
+                </div>
+              )}
+
+              {formStatus.error && (
+                <div className="bg-rose-50 border border-rose-200 p-3 rounded-lg flex items-center space-x-2.5 text-rose-700 text-xs sm:text-sm font-semibold">
+                  <AlertCircle className="h-4.5 w-4.5 text-rose-600 shrink-0 animate-bounce" />
+                  <span>{formStatus.error}</span>
                 </div>
               )}
 
