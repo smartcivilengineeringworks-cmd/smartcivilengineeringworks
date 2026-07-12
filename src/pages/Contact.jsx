@@ -19,6 +19,8 @@ const Contact = () => {
     message: ''
   });
 
+  const [botcheck, setBotcheck] = useState(false);
+
   const [formStatus, setFormStatus] = useState({
     submitting: false,
     success: false,
@@ -59,6 +61,26 @@ const Contact = () => {
     if (!validateForm()) return;
 
     setFormStatus({ submitting: true, success: false, error: null });
+
+    // Spam honeypot check
+    if (botcheck) {
+      setTimeout(() => {
+        setFormStatus({
+          submitting: false,
+          success: true,
+          error: null
+        });
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: 'General Inquiry',
+          message: ''
+        });
+        setBotcheck(false);
+      }, 1000);
+      return;
+    }
 
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
     
@@ -219,6 +241,16 @@ const Contact = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               
+              {/* Honeypot Spam Protection */}
+              <input 
+                type="checkbox" 
+                name="botcheck" 
+                checked={botcheck} 
+                onChange={(e) => setBotcheck(e.target.checked)} 
+                className="hidden" 
+                style={{ display: 'none' }} 
+              />
+
               {/* Form Status Messages */}
               {formStatus.success && (
                 <div className="bg-emerald-50 border border-emerald-250 p-3 rounded-lg flex items-center space-x-2.5 text-emerald-700 text-xs sm:text-sm font-semibold">
