@@ -261,19 +261,10 @@ const Home = () => {
         {/* 3 Featured Projects preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            {
-              ...projectsList.find(p => p.id === 1),
-              image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop'
-            },
-            {
-              ...projectsList.find(p => p.id === 3),
-              image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop'
-            },
-            {
-              ...projectsList.find(p => p.id === 7),
-              image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop'
-            }
-          ].map((project, idx) => (
+            projectsList.find(p => p.id === 1),
+            projectsList.find(p => p.id === 3),
+            projectsList.find(p => p.id === 7)
+          ].filter(Boolean).map((project, idx) => (
             <motion.div
               key={idx}
               whileHover={{ y: -6 }}
