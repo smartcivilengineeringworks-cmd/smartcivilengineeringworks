@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen } from 'lucide-react';
+import davidPortrait from '../images/PRO1471r.jpg';
 
 const About = () => {
   const coreValues = [
@@ -41,7 +42,7 @@ const About = () => {
       name: 'David IYAKAREMYE',
       role: 'Managing Director & Founder',
       bio: 'David leads the structural design and corporate strategy of Smart Civil Engineering Works Ltd. Under his leadership since 2017, the firm has successfully delivered over 26+ key projects in residential and commercial infrastructure across Rwanda.',
-      avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop'
+      avatar: davidPortrait
     },
     {
       name: 'Valentine UMUHOZA',
