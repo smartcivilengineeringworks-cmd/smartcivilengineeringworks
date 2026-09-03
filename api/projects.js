@@ -20,7 +20,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, count: projects.length, data: projects });
     } catch (error) {
       console.error('Fetch projects error:', error);
-      return res.status(500).json({ success: false, message: 'Failed to fetch projects from database' });
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to fetch projects from database',
+        error: error.message || String(error)
+      });
     }
   }
 
