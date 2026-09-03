@@ -36,32 +36,74 @@ export const api = {
 
   // Create new project
   async createProject(projectData, token) {
-    const res = await fetch(`${API_BASE}/projects`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(projectData)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to create project');
-    return data;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
+
+    try {
+      const res = await fetch(`${API_BASE}/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(projectData),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Server returned HTTP ${res.status}. If uploading a large photo, please try a smaller image or an external image link.`);
+      }
+
+      if (!res.ok) throw new Error(data.message || data.error || 'Failed to create project');
+      return data;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        throw new Error('Upload timed out. If the image is large, it was automatically compressed; please try again or use an external URL link.');
+      }
+      throw err;
+    }
   },
 
   // Update existing project
   async updateProject(projectData, token) {
-    const res = await fetch(`${API_BASE}/projects`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(projectData)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to update project');
-    return data;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+    try {
+      const res = await fetch(`${API_BASE}/projects`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(projectData),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Server returned HTTP ${res.status}.`);
+      }
+
+      if (!res.ok) throw new Error(data.message || data.error || 'Failed to update project');
+      return data;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        throw new Error('Save timed out. Please check your internet connection.');
+      }
+      throw err;
+    }
   },
 
   // Delete project

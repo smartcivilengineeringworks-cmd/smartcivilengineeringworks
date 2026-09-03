@@ -62,8 +62,57 @@ const emptyProjectForm = {
   scope: ''
 };
 
+// Client-side image optimizer to keep uploads lightweight (under 250KB) and fast
+const compressImage = (file) => {
+  return new Promise((resolve, reject) => {
+    if (file.type === 'image/svg+xml') {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const maxWidth = 1200;
+        const maxHeight = 900;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / maxWidth > height / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress to high quality JPEG
+        const compressed = canvas.toDataURL('image/jpeg', 0.82);
+        resolve(compressed);
+      };
+      img.onerror = () => resolve(event.target.result);
+    };
+    reader.onerror = reject;
+  });
+};
+
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' | 'inquiries'
+  const [imageLoading, setImageLoading] = useState(false);
   const [projects, setProjects] = useState([]);
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -190,8 +239,16 @@ const AdminDashboard = () => {
         throw new Error('Project title is required');
       }
 
+      // Automatically convert Google Drive sharing links to direct viewable image URLs
+      let finalImageUrl = (projectForm.image_url || '').trim();
+      const driveMatch = finalImageUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || finalImageUrl.match(/id=([a-zA-Z0-9_-]+)/);
+      if (driveMatch && driveMatch[1]) {
+        finalImageUrl = `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+      }
+
       const payload = {
         ...projectForm,
+        image_url: finalImageUrl || defaultImages[0],
         description: projectForm.description || projectForm.title,
         progress: Number(projectForm.progress) || 0
       };
@@ -868,24 +925,33 @@ const AdminDashboard = () => {
                 {/* 2. DIRECT DEVICE UPLOAD TAB */}
                 {imageSourceTab === 'upload' && (
                   <div className="space-y-2 pt-1">
-                    <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 hover:border-accent rounded-xl bg-white cursor-pointer transition-colors group">
+                    <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-slate-300 hover:border-accent rounded-xl bg-white cursor-pointer transition-colors group">
                       <Upload className="h-6 w-6 text-slate-400 group-hover:text-accent mb-1 transition-colors" />
                       <span className="text-xs font-bold text-slate-700 group-hover:text-navy">
-                        Click to select image from your device
+                        {imageLoading ? 'Optimizing photo for web...' : 'Click to select photo from device'}
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-0.5">PNG, JPG, WEBP formats supported</span>
+                      <span className="text-[10px] text-slate-400 mt-0.5">
+                        {imageLoading ? 'Resizing and compressing...' : 'Photos are automatically compressed for fast loading'}
+                      </span>
                       <input
                         type="file"
                         accept="image/*"
+                        disabled={imageLoading}
                         className="hidden"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setProjectForm({ ...projectForm, image_url: reader.result });
-                            };
-                            reader.readAsDataURL(file);
+                            setImageLoading(true);
+                            setFormError('');
+                            try {
+                              const compressed = await compressImage(file);
+                              setProjectForm((prev) => ({ ...prev, image_url: compressed }));
+                            } catch (err) {
+                              console.error('Compression error:', err);
+                              setFormError('Failed to process image. Please try another photo or external link.');
+                            } finally {
+                              setImageLoading(false);
+                            }
                           }
                         }}
                       />

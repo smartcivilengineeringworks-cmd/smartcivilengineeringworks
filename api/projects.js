@@ -73,7 +73,11 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Create project error:', error);
-      return res.status(500).json({ success: false, message: 'Failed to create project' });
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to create project: ' + (error.message || String(error)),
+        error: error.message || String(error)
+      });
     }
   }
 
@@ -128,7 +132,11 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Update project error:', error);
-      return res.status(500).json({ success: false, message: 'Failed to update project' });
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to update project: ' + (error.message || String(error)),
+        error: error.message || String(error)
+      });
     }
   }
 
@@ -155,7 +163,11 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Delete project error:', error);
-      return res.status(500).json({ success: false, message: 'Failed to delete project' });
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete project: ' + (error.message || String(error)),
+        error: error.message || String(error)
+      });
     }
   }
 
