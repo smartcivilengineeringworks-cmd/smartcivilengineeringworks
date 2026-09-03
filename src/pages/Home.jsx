@@ -261,8 +261,8 @@ const Home = () => {
         {/* 3 Featured Projects preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
+            projectsList.find(p => p.id === 5),
             projectsList.find(p => p.id === 1),
-            projectsList.find(p => p.id === 3),
             projectsList.find(p => p.id === 7)
           ].filter(Boolean).map((project, idx) => (
             <motion.div
@@ -280,11 +280,22 @@ const Home = () => {
                 <div className="absolute top-4 left-4 bg-navy/90 backdrop-blur-sm px-3.5 py-1.5 rounded-lg text-white text-[10px] font-sans font-bold tracking-widest uppercase">
                   Featured
                 </div>
+                {project.status === 'Ongoing' && (
+                  <div className="absolute top-4 right-4 bg-emerald-600/95 backdrop-blur-sm px-3 py-1 rounded-full text-white text-[10px] font-sans font-bold tracking-wider uppercase flex items-center space-x-1.5 shadow-md">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    <span>Ongoing</span>
+                  </div>
+                )}
               </div>
               <div className="p-6">
-                <span className="text-accent text-[10px] font-sans font-bold tracking-wider uppercase block mb-1">
-                  {project.category}
-                </span>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-accent text-[10px] font-sans font-bold tracking-wider uppercase block">
+                    {project.category}
+                  </span>
+                  <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                    {project.location.split(',')[0]}
+                  </span>
+                </div>
                 <h3 className="text-navy font-serif font-black text-base sm:text-lg uppercase group-hover:text-accent transition-colors duration-200">
                   {project.title}
                 </h3>

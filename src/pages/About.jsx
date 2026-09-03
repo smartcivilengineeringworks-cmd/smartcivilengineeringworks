@@ -1,7 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen } from 'lucide-react';
-import { leadershipTeam, staffTeam } from '../data/teamData';
+import { leadershipTeam } from '../data/teamData';
 import { projectsList } from '../data/projectsData';
 
 const About = () => {
@@ -209,51 +208,6 @@ const About = () => {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Staff / Engineering Team Section */}
-      <section className="bg-warm-bg text-slate-700 py-12 md:py-16 border-t border-slate-200/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
-          <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
-            <span className="text-accent text-[10px] sm:text-xs font-bold tracking-widest uppercase bg-accent/15 px-3 py-1 rounded-full inline-block">
-              Experts
-            </span>
-            <h2 className="text-2xl md:text-3xl font-serif font-black uppercase text-navy">
-              Our Professional Staff
-            </h2>
-            <p className="text-slate-500 text-xs sm:text-sm font-medium">
-              The engineers, architects, surveyors, and technicians delivering high quality standards on site.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {staffTeam.map((member, idx) => {
-              const initials = member.name
-                .split(' ')
-                .map((n) => n[0])
-                .join('')
-                .substring(0, 2)
-                .toUpperCase();
-              return (
-                <div key={idx} className="bg-white border border-slate-200/50 rounded-2xl p-6 flex flex-col space-y-4 hover:border-accent/20 hover:shadow-lg transition-all duration-300 shadow-md">
-                  <div className="flex items-center space-x-4">
-                    <div className="h-14 w-14 rounded-xl overflow-hidden bg-navy text-white font-black text-base flex items-center justify-center border border-navy/10 shrink-0 select-none">
-                      {initials}
-                    </div>
-                    <div className="space-y-0.5">
-                      <h3 className="text-sm sm:text-base font-black text-navy uppercase leading-tight">{member.name}</h3>
-                      <span className="text-[10px] text-accent font-bold uppercase tracking-wider block">{member.role}</span>
-                      <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block bg-slate-50 border border-slate-100 rounded-md px-1.5 py-0.5 w-max">{member.department}</span>
-                    </div>
-                  </div>
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
-                    {member.bio}
-                  </p>
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>

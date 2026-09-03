@@ -73,8 +73,11 @@ export const projectsList = [
     category: 'Residential',
     desc: 'High-end G+1 Residential Building',
     image: imgG1Res2,
-    year: '2020',
-    location: 'Gasabo, Kigali',
+    year: 'Ongoing',
+    status: 'Ongoing',
+    progress: 80,
+    progressStage: 'Execution & Supervision Phase',
+    location: 'Nyarugenge, Kigali',
     model: 'Design, Build & Supervision',
     scope: 'Feasibility studies, structural design checks, reinforced concrete frame execution, and premium cladding finishing.'
   },
@@ -85,6 +88,8 @@ export const projectsList = [
     desc: 'Large span structural engineering design',
     image: imgKirehe,
     year: '2022',
+    status: 'Completed',
+    progress: 100,
     location: 'Kirehe, Eastern Province',
     model: 'Structural Auditing & Design Consultancy',
     scope: 'Designing large-span structural steel roof trusses, foundations loading parameters, and wind shear calculations.'
@@ -95,7 +100,9 @@ export const projectsList = [
     category: 'Residential',
     desc: 'G+1 Residential Development Estate',
     image: imgRebero,
-    year: '2022',
+    year: '2025',
+    status: 'Completed',
+    progress: 100,
     location: 'Rebero, Kigali',
     model: 'Full Architecture, Planning & Supervision',
     scope: 'Master plan coordinates, infrastructure layout, individual villa designs, and building supervision.'
@@ -107,6 +114,8 @@ export const projectsList = [
     desc: 'Commercial / Industrial Fuel Station Block',
     image: imgBusogo,
     year: '2021',
+    status: 'Completed',
+    progress: 100,
     location: 'Busogo, Rwanda',
     model: 'Design, Build & Supervision',
     scope: 'Hydraulic and safety hazard design, concrete containment slab engineering, utility infrastructure, and service shop design.'
@@ -117,7 +126,9 @@ export const projectsList = [
     category: 'Commercial',
     desc: 'Multi-storey Commercial Building',
     image: imgBusanza,
-    year: '2019',
+    year: '2024',
+    status: 'Completed',
+    progress: 100,
     location: 'Kanombe, Kigali',
     model: 'Detailed Design & Site Supervision',
     scope: 'Complete structural concrete framework design, staircases design, fire safety permit files, and drainage systems.'

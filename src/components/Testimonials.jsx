@@ -51,9 +51,11 @@ const Testimonials = () => {
           <h4 className="font-display font-black text-sm uppercase text-navy tracking-wide">
             {reviews[currentIndex].author}
           </h4>
-          <span className="text-xs text-slate-450 font-bold uppercase tracking-wider">
-            {reviews[currentIndex].position}
-          </span>
+          {reviews[currentIndex].position && (
+            <span className="text-xs text-slate-450 font-bold uppercase tracking-wider">
+              {reviews[currentIndex].position}
+            </span>
+          )}
         </div>
 
         {/* Navigation Slider arrows */}

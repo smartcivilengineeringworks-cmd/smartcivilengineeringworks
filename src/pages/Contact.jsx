@@ -9,6 +9,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { projectsList } from '../data/projectsData';
 
 const XIcon = () => (
   <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
@@ -164,7 +165,7 @@ const Contact = () => {
 
       {/* Header */}
       <section className="bg-navy text-white py-16 md:py-24 relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-cover bg-center opacity-15" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1516216628859-9bccecab13ca?q=80&w=1200&auto=format&fit=crop')` }} />
+        <div className="absolute inset-0 bg-cover bg-center opacity-15" style={{ backgroundImage: `url('${projectsList.find(p => p.id === 1)?.image || ''}')` }} />
         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/90 to-navy/40" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">

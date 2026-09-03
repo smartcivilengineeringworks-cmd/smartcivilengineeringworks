@@ -2,25 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import heroSlide1 from '../images/projects/Musanze Mixed Use Complex — Mixed Use Development.png';
+import heroSlide2 from '../images/projects/G+3 Residential Apartment — Residential  Multi-storey.png';
+import heroSlide3 from '../images/projects/Nyabyondo Commercial Building — Commercial Building.png';
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
     {
-      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=1600&auto=format&fit=crop',
+      image: heroSlide1,
       title: 'Delivering Complete Engineering Solutions',
       subtitle: 'From Concept to Completion',
       desc: 'Smart Civil Engineering Works Limited provides multidisciplinary engineering consultancy, detailed architectural design, and robust project supervision services in Rwanda.'
     },
     {
-      image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1600&auto=format&fit=crop',
+      image: heroSlide2,
       title: 'Innovative Architectural & Structural Design',
       subtitle: 'Built for Durability and Aesthetics',
       desc: 'We combine state-of-the-art 3D rendering with precise structural integrity testing to draft blueprints that stand the test of time.'
     },
     {
-      image: 'https://images.unsplash.com/photo-1590069261209-f8e9b8642343?q=80&w=1600&auto=format&fit=crop',
+      image: heroSlide3,
       title: 'Infrastructure & Project Management',
       subtitle: 'On Time. On Budget. Under Control.',
       desc: 'With over 26+ key projects completed across Rwanda, our experienced supervision team guarantees flawless construction execution and high quality standards.'

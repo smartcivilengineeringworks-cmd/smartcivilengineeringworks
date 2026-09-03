@@ -3,7 +3,7 @@ import { Calculator, CheckCircle2 } from 'lucide-react';
 
 const CostCalculator = () => {
   const [projectType, setProjectType] = useState('residential');
-  const [scale, setScale] = useState(150); // sqm
+  const [scale, setScale] = useState(300); // default to 300 sqm
   const [terrain, setTerrain] = useState('flat');
 
   const [estimates, setEstimates] = useState({
@@ -15,26 +15,28 @@ const CostCalculator = () => {
   });
 
   useEffect(() => {
-    let baseRate = 0;
+    // Baseline rate: 1,000 USD per 300 sqm
+    const baseRatePerSqm = 1000 / 300;
+    let typeMultiplier = 1.0;
     switch (projectType) {
       case 'residential':
-        baseRate = 25; // rate per sqm in USD
+        typeMultiplier = 1.0;
         break;
       case 'commercial':
-        baseRate = 45;
+        typeMultiplier = 1.25;
         break;
       case 'tvet':
-        baseRate = 35;
+        typeMultiplier = 1.15;
         break;
       case 'infrastructure':
-        baseRate = 55;
+        typeMultiplier = 1.35;
         break;
       default:
-        baseRate = 25;
+        typeMultiplier = 1.0;
     }
 
-    const terrainMultiplier = terrain === 'steep' ? 1.35 : terrain === 'moderate' ? 1.15 : 1.0;
-    const baseCost = scale * baseRate * terrainMultiplier;
+    const terrainMultiplier = terrain === 'steep' ? 1.25 : terrain === 'moderate' ? 1.1 : 1.0;
+    const baseCost = scale * baseRatePerSqm * typeMultiplier * terrainMultiplier;
 
     const studiesCost = Math.round(baseCost * 0.15); // 15%
     const architecturalCost = Math.round(baseCost * 0.35); // 35%
@@ -58,10 +60,15 @@ const CostCalculator = () => {
         {/* Left Side: Inputs */}
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-2">
-            <h3 className="text-base font-display font-black text-navy uppercase tracking-wide flex items-center space-x-2">
-              <Calculator className="h-5 w-5 text-accent" />
-              <span>Project Cost Estimator</span>
-            </h3>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-base font-display font-black text-navy uppercase tracking-wide flex items-center space-x-2">
+                <Calculator className="h-5 w-5 text-accent" />
+                <span>Project Cost Estimator</span>
+              </h3>
+              <span className="text-[10px] font-bold text-accent bg-accent/10 border border-accent/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                $1,000 / 300 SQM
+              </span>
+            </div>
             <p className="text-slate-500 text-xs font-medium leading-relaxed">
               Input your planned construction parameters to receive an instantly calculated fee proposal estimate for our design and engineering consultancy services.
             </p>

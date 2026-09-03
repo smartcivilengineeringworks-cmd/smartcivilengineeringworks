@@ -7,10 +7,12 @@ const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
 
-  const categories = ['All', 'Commercial', 'Residential', 'Infrastructure', 'Structural'];
+  const categories = ['All', 'Ongoing', 'Commercial', 'Residential', 'Infrastructure', 'Structural'];
 
   const filteredProjects = activeCategory === 'All' 
     ? projectsList 
+    : activeCategory === 'Ongoing'
+    ? projectsList.filter(proj => proj.status === 'Ongoing')
     : projectsList.filter(proj => proj.category === activeCategory);
 
   // Use a local project image for the header background (e.g. Musanze mixed use)
@@ -86,10 +88,17 @@ const Projects = () => {
                       <MapPin className="h-3.5 w-3.5 text-accent" />
                       <span>{project.location.split(',')[0]}</span>
                     </span>
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="h-3.5 w-3.5 text-accent" />
-                      <span>{project.year}</span>
-                    </span>
+                    {project.status === 'Ongoing' ? (
+                      <span className="flex items-center space-x-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>Ongoing</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center space-x-1">
+                        <Calendar className="h-3.5 w-3.5 text-accent" />
+                        <span>{project.year}</span>
+                      </span>
+                    )}
                   </div>
                   
                   <h3 className="text-navy font-serif font-black text-base sm:text-lg uppercase group-hover:text-accent transition-colors duration-250 leading-tight">
@@ -99,6 +108,24 @@ const Projects = () => {
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium line-clamp-2">
                     {project.desc}
                   </p>
+
+                  {project.status === 'Ongoing' && (
+                    <div className="pt-2 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100">
+                      <div className="flex justify-between items-center text-[10px] font-bold text-emerald-800 mb-1.5">
+                        <span className="flex items-center space-x-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                          <span>Progress: {project.progressStage || 'Ongoing'}</span>
+                        </span>
+                        <span>{project.progress}%</span>
+                      </div>
+                      <div className="w-full bg-emerald-100/70 rounded-full h-1.5 overflow-hidden">
+                        <div 
+                          className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                          style={{ width: `${project.progress}%` }} 
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="border-t border-slate-100 mt-5 pt-4 text-accent text-xs font-bold tracking-wider uppercase flex items-center justify-between">
@@ -173,13 +200,51 @@ const Projects = () => {
                     </span>
                   </div>
                   <div className="space-y-1 pt-1">
-                    <span className="text-slate-500 font-bold uppercase tracking-wider text-[9px]">Completion Year</span>
+                    <span className="text-slate-500 font-bold uppercase tracking-wider text-[9px]">
+                      {selectedProject.status === 'Ongoing' ? 'Project Status' : 'Completion Year'}
+                    </span>
                     <span className="block text-navy font-black flex items-center space-x-1">
-                      <Calendar className="h-3.5 w-3.5 text-accent" />
-                      <span>{selectedProject.year}</span>
+                      {selectedProject.status === 'Ongoing' ? (
+                        <span className="flex items-center space-x-1.5 text-emerald-700 font-black">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>Ongoing Project</span>
+                        </span>
+                      ) : (
+                        <>
+                          <Calendar className="h-3.5 w-3.5 text-accent" />
+                          <span>{selectedProject.year}</span>
+                        </>
+                      )}
                     </span>
                   </div>
                 </div>
+
+                {/* Progress Status Card (for Ongoing Projects) */}
+                {selectedProject.status === 'Ongoing' && (
+                  <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 space-y-3 font-sans">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-black text-emerald-900 flex items-center space-x-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>Project Status: Ongoing ({selectedProject.progressStage || 'Execution Phase'})</span>
+                      </span>
+                      <span className="font-black text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-200 text-xs">
+                        {selectedProject.progress}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-emerald-100 rounded-full h-2.5 overflow-hidden">
+                      <div 
+                        className="bg-emerald-500 h-full rounded-full transition-all duration-500" 
+                        style={{ width: `${selectedProject.progress}%` }} 
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 text-[9px] font-bold text-slate-500 text-center pt-1 gap-1">
+                      <span className="text-emerald-700 font-black bg-emerald-100/50 py-1 rounded">✓ Feasibility</span>
+                      <span className="text-emerald-700 font-black bg-emerald-100/50 py-1 rounded">✓ Structure Checks</span>
+                      <span className="text-emerald-800 font-black bg-emerald-200/60 py-1 rounded">● RC Execution</span>
+                      <span className="text-slate-400 py-1">Finishing</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Scope of Work */}
                 <div className="space-y-3">

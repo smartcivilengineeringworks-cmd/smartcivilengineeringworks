@@ -1,8 +1,8 @@
 export const reviews = [
   {
     quote: 'Smart Civil works delivered the structural auditing and gymnasium steel roof truss designs on time. Their compliance parameters and coordination with the municipality registrar board made the permit approval seamless.',
-    author: 'Rev. Canon Jean-Pierre',
-    position: 'RDIS Muhanga Office Developer',
+    author: 'Rev. NTARINDWA Viateur',
+    position: '',
     rating: 5
   },
   {
