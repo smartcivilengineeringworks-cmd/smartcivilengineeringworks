@@ -1,6 +1,6 @@
 import { projectsList as fallbackProjects } from '../data/projectsData';
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export const api = {
   // Fetch all projects (with fallback)

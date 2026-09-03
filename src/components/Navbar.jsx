@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../images/civil-logo-small.png';
 
@@ -84,10 +84,30 @@ const Navbar = () => {
               <Phone className="h-3.5 w-3.5" />
               <span>Contact us</span>
             </NavLink>
+
+            {/* Admin Login Icon Button */}
+            <NavLink
+              to="/admin/login"
+              title="Manager / Admin Portal"
+              className="flex items-center justify-center h-9 w-9 rounded-full bg-slate-100 hover:bg-navy text-slate-500 hover:text-white transition-all duration-200 border border-slate-200/80 shadow-xs group"
+              aria-label="Admin Login"
+            >
+              <ShieldCheck className="h-4 w-4 text-slate-600 group-hover:text-accent transition-colors" />
+            </NavLink>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
+          <div className="flex md:hidden items-center space-x-2">
+            {/* Mobile quick admin icon */}
+            <NavLink
+              to="/admin/login"
+              title="Admin Portal"
+              className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-slate-600 border border-slate-200"
+              aria-label="Admin Login"
+            >
+              <ShieldCheck className="h-4 w-4 text-accent" />
+            </NavLink>
+
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2.5 rounded-xl text-slate-655 hover:text-navy hover:bg-slate-100 focus:outline-none transition-colors duration-150"
@@ -131,6 +151,14 @@ const Navbar = () => {
               >
                 <Phone className="h-4 w-4" />
                 <span>Contact us</span>
+              </NavLink>
+
+              <NavLink
+                to="/admin/login"
+                className="flex items-center justify-center space-x-2 w-full mt-2.5 px-4 py-2.5 bg-slate-100 text-slate-700 font-bold uppercase text-[11px] tracking-wider rounded-xl hover:bg-navy hover:text-white transition-all border border-slate-200"
+              >
+                <ShieldCheck className="h-4 w-4 text-accent" />
+                <span>Manager Admin Portal</span>
               </NavLink>
             </div>
           </motion.div>

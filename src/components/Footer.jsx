@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock, ArrowUp } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, ArrowUp, Lock } from 'lucide-react';
 import logo from '../images/civil-logo-big.png';
 
 // Custom X (formerly Twitter) SVG Icon
@@ -171,6 +171,11 @@ const Footer = () => {
               <NavLink to="/terms" className="hover:text-accent transition-colors">Terms</NavLink>
               <span className="text-white/10">|</span>
               <NavLink to="/cookies" className="hover:text-accent transition-colors">Cookies</NavLink>
+              <span className="text-white/10">|</span>
+              <NavLink to="/admin/login" className="hover:text-accent transition-colors flex items-center space-x-1">
+                <Lock className="h-2.5 w-2.5" />
+                <span>Admin</span>
+              </NavLink>
             </div>
           </div>
  
