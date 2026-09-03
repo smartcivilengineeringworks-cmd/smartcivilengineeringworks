@@ -15,28 +15,8 @@ const CostCalculator = () => {
   });
 
   useEffect(() => {
-    // Baseline rate: 1,000 USD per 300 sqm
-    const baseRatePerSqm = 1000 / 300;
-    let typeMultiplier = 1.0;
-    switch (projectType) {
-      case 'residential':
-        typeMultiplier = 1.0;
-        break;
-      case 'commercial':
-        typeMultiplier = 1.25;
-        break;
-      case 'tvet':
-        typeMultiplier = 1.15;
-        break;
-      case 'infrastructure':
-        typeMultiplier = 1.35;
-        break;
-      default:
-        typeMultiplier = 1.0;
-    }
-
-    const terrainMultiplier = terrain === 'steep' ? 1.25 : terrain === 'moderate' ? 1.1 : 1.0;
-    const baseCost = scale * baseRatePerSqm * typeMultiplier * terrainMultiplier;
+    // Exact rate: 1,000 USD (1k) per 300 sqm
+    const baseCost = Math.round((scale / 300) * 1000);
 
     const studiesCost = Math.round(baseCost * 0.15); // 15%
     const architecturalCost = Math.round(baseCost * 0.35); // 35%
@@ -51,7 +31,7 @@ const CostCalculator = () => {
       supervision: supervisionCost,
       total: totalCost
     });
-  }, [projectType, scale, terrain]);
+  }, [scale]);
 
   return (
     <div className="bg-white border border-slate-200/50 rounded-3xl p-6 md:p-10 shadow-2xl max-w-3xl mx-auto font-sans text-slate-650">
@@ -116,8 +96,25 @@ const CostCalculator = () => {
                 onChange={(e) => setScale(Number(e.target.value))}
                 className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent"
               />
+              {/* Quick Size Presets */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {[150, 300, 600, 900].map((sqm) => (
+                  <button
+                    key={sqm}
+                    type="button"
+                    onClick={() => setScale(sqm)}
+                    className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+                      scale === sqm
+                        ? 'bg-accent text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {sqm} SQM (${Math.round((sqm / 300) * 1000).toLocaleString()})
+                  </button>
+                ))}
+              </div>
             </div>
- 
+
             {/* Terrain Slope */}
             <div className="space-y-2">
               <label className="text-slate-500 uppercase tracking-wider text-[9px]">Terrain Slope Profile</label>
@@ -142,15 +139,18 @@ const CostCalculator = () => {
                 ))}
               </div>
             </div>
- 
+
           </div>
         </div>
- 
+
         {/* Right Side: Estimated Outputs */}
         <div className="lg:col-span-6 bg-navy text-white p-6 md:p-8 rounded-2xl relative overflow-hidden shadow-2xl border border-white/5">
           <div className="absolute top-0 right-0 h-28 w-28 bg-accent/10 rounded-full filter blur-xl pointer-events-none" />
           
-          <h4 className="text-slate-350 font-bold tracking-wider uppercase text-xs mb-4">Estimated Fees Breakdown</h4>
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-slate-350 font-bold tracking-wider uppercase text-xs">Estimated Fees Breakdown</h4>
+            <span className="text-[10px] font-bold text-accent bg-accent/15 px-2 py-0.5 rounded-full uppercase">1k / 300 SQM</span>
+          </div>
           
           <div className="space-y-4 text-xs sm:text-sm font-semibold">
             {/* Studies */}
@@ -176,17 +176,17 @@ const CostCalculator = () => {
               <span className="text-slate-300">QA/QC Supervision & Safety (20%):</span>
               <span className="text-slate-100 font-bold">${estimates.supervision.toLocaleString()}</span>
             </div>
- 
+
             {/* Total Fee Proposal */}
             <div className="flex justify-between items-center pt-4 border-t border-accent/30">
               <span className="text-accent uppercase tracking-wider font-black text-xs">Estimated Consultancy:</span>
               <span className="text-white font-serif font-black text-lg sm:text-xl">${estimates.total.toLocaleString()}</span>
             </div>
           </div>
- 
+
           <div className="mt-6 flex items-start space-x-2 text-[9px] text-slate-400 leading-normal font-medium">
             <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-            <span>Note: This is a planning estimate. Standard municipality stamps and soil lab core crashing fees are calculated separately.</span>
+            <span>Note: Rate is strictly 1,000 USD (1k) per 300 SQM. Standard municipality stamps and soil lab core crashing fees are calculated separately.</span>
           </div>
         </div>
  
