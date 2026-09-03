@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import FaqAccordion from '../components/FaqAccordion';
 import { serviceCategories } from '../data/servicesData';
-import { projectsList } from '../data/projectsData';
+import { useProjects } from '../context/ProjectsContext';
 
 const iconMap = {
   Compass,
@@ -24,11 +24,12 @@ const iconMap = {
 };
 
 const Services = () => {
+  const { projects } = useProjects();
   const [activeTab, setActiveTab] = useState(serviceCategories[0].id);
   const activeCategory = serviceCategories.find(cat => cat.id === activeTab);
   const ActiveIcon = iconMap[activeCategory.iconName] || HardHat;
 
-  const headerBg = projectsList.find(p => p.id === 8)?.image || '';
+  const headerBg = projects.find(p => p.id === 8)?.image || projects[0]?.image || '';
 
   return (
     <div className="pt-16 font-sans bg-warm-bg text-slate-700">

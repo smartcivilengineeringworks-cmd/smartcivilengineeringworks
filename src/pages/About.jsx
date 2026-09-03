@@ -1,9 +1,10 @@
 import React from 'react';
 import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen } from 'lucide-react';
 import { leadershipTeam } from '../data/teamData';
-import { projectsList } from '../data/projectsData';
+import { useProjects } from '../context/ProjectsContext';
 
 const About = () => {
+  const { projects } = useProjects();
   const coreValues = [
     {
       icon: Award,
@@ -37,8 +38,8 @@ const About = () => {
     }
   ];
 
-  // Find a local project image for the header background
-  const headerBg = projectsList.find(p => p.id === 12)?.image || '';
+  // Find a project image for the header background
+  const headerBg = projects.find(p => p.id === 12)?.image || projects[0]?.image || '';
 
   const renderAvatar = (member) => {
     if (member.avatar) {

@@ -24,6 +24,7 @@ import {
   Image as ImageIcon
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { useProjects } from '../../context/ProjectsContext';
 
 const categories = ['Residential', 'Commercial', 'Educational', 'Infrastructure', 'Structural'];
 
@@ -111,6 +112,7 @@ const compressImage = (file) => {
 };
 
 const AdminDashboard = () => {
+  const { refreshProjects } = useProjects();
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' | 'inquiries'
   const [imageLoading, setImageLoading] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -263,6 +265,7 @@ const AdminDashboard = () => {
 
       setIsModalOpen(false);
       loadAllData(token);
+      refreshProjects();
     } catch (err) {
       setFormError(err.message || 'Failed to save project');
     } finally {
@@ -279,6 +282,7 @@ const AdminDashboard = () => {
       showToast(`Project "${deleteTarget.title}" deleted.`);
       setDeleteTarget(null);
       loadAllData(token);
+      refreshProjects();
     } catch (err) {
       alert(`Delete failed: ${err.message}`);
     } finally {

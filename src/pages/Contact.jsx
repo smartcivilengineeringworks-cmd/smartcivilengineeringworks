@@ -9,7 +9,7 @@ import {
   CheckCircle,
   AlertCircle
 } from 'lucide-react';
-import { projectsList } from '../data/projectsData';
+import { useProjects } from '../context/ProjectsContext';
 
 const XIcon = () => (
   <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
@@ -27,6 +27,7 @@ const InstagramIcon = () => (
 
 
 const Contact = () => {
+  const { projects } = useProjects();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -159,7 +160,7 @@ const Contact = () => {
 
       {/* Header */}
       <section className="bg-navy text-white py-16 md:py-24 relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-cover bg-center opacity-15" style={{ backgroundImage: `url('${projectsList.find(p => p.id === 1)?.image || ''}')` }} />
+        <div className="absolute inset-0 bg-cover bg-center opacity-15" style={{ backgroundImage: `url('${projects.find(p => p.id === 1)?.image || projects[0]?.image || ''}')` }} />
         <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/90 to-navy/40" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">

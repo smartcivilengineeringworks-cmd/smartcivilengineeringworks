@@ -3,13 +3,19 @@ import { projectsList as fallbackProjects } from '../data/projectsData';
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export const api = {
-  // Fetch all projects (with fallback)
+  // Fetch all projects directly from backend database (no-cache)
   async getProjects() {
     try {
-      const res = await fetch(`${API_BASE}/projects`);
+      const res = await fetch(`${API_BASE}/projects?_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache'
+        }
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+      if (data && data.success && Array.isArray(data.data)) {
         // Map database fields to frontend fields
         return data.data.map((p) => ({
           ...p,
@@ -20,7 +26,7 @@ export const api = {
           image: p.image_url || fallbackProjects.find(fb => fb.id === p.id)?.image || '',
           year: p.year || 'Ongoing',
           status: p.status || 'Completed',
-          progress: p.progress || 100,
+          progress: p.progress !== undefined ? p.progress : 100,
           progressStage: p.progress_stage || 'Completed',
           location: p.location || 'Kigali, Rwanda',
           model: p.model || 'Design, Build & Supervision',
@@ -29,7 +35,7 @@ export const api = {
       }
       return fallbackProjects;
     } catch (err) {
-      console.warn('API fetch failed, using fallback data:', err.message);
+      console.warn('Backend API fetch failed, using fallback data:', err.message);
       return fallbackProjects;
     }
   },
@@ -108,15 +114,38 @@ export const api = {
 
   // Delete project
   async deleteProject(id, token) {
-    const res = await fetch(`${API_BASE}/projects?id=${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+    try {
+      const res = await fetch(`${API_BASE}/projects?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ id: Number(id) }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Server returned HTTP ${res.status}`);
       }
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || 'Failed to delete project');
-    return data;
+
+      if (!res.ok) throw new Error(data.message || data.error || 'Failed to delete project');
+      return data;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        throw new Error('Delete request timed out. Please check connection and try again.');
+      }
+      throw err;
+    }
   },
 
   // Admin login

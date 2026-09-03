@@ -20,6 +20,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 
 // Components
 import CookieConsent from './components/CookieConsent';
+import { ProjectsProvider } from './context/ProjectsContext';
 
 // ScrollToTop behavior on page transition
 const ScrollToTop = () => {
@@ -74,8 +75,10 @@ const AppContent = () => {
 function App() {
   return (
     <Router>
-      <ScrollToTop />
-      <AppContent />
+      <ProjectsProvider>
+        <ScrollToTop />
+        <AppContent />
+      </ProjectsProvider>
     </Router>
   );
 }

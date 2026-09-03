@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import Hero from '../components/Hero';
-import { projectsList } from '../data/projectsData';
-import { api } from '../services/api';
+import { useProjects } from '../context/ProjectsContext';
 import ServiceCard from '../components/ServiceCard';
 import PartnerTicker from '../components/PartnerTicker';
 import CostCalculator from '../components/CostCalculator';
@@ -23,13 +22,7 @@ import {
 } from 'lucide-react';
 
 const Home = () => {
-  const [projects, setProjects] = useState(projectsList);
-
-  useEffect(() => {
-    api.getProjects().then((data) => {
-      if (data && data.length > 0) setProjects(data);
-    });
-  }, []);
+  const { projects } = useProjects();
 
   const featuredServices = [
     {

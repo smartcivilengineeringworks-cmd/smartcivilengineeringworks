@@ -2,16 +2,19 @@ import { sql } from './db.js';
 import { verifyAdminToken } from './auth.js';
 
 export default async function handler(req, res) {
-  // CORS Headers
+  // CORS & Cache-Control Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // 1. GET ALL PROJECTS (Public)
+  // 1. GET ALL PROJECTS (Public - Always Fresh from Neon DB)
   if (req.method === 'GET') {
     try {
       const projects = await sql`
@@ -143,7 +146,22 @@ export default async function handler(req, res) {
   // 4. DELETE PROJECT (Protected)
   if (req.method === 'DELETE') {
     try {
-      const id = req.query?.id || (req.body && req.body.id);
+      let id = req.query?.id;
+
+      if (!id && req.body) {
+        try {
+          const bodyData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+          id = bodyData?.id;
+        } catch {}
+      }
+
+      if (!id && req.url) {
+        try {
+          const parsedUrl = new URL(req.url, 'http://localhost');
+          id = parsedUrl.searchParams.get('id');
+        } catch {}
+      }
+
       if (!id) {
         return res.status(400).json({ success: false, message: 'Project ID required for deletion' });
       }
@@ -153,7 +171,7 @@ export default async function handler(req, res) {
       `;
 
       if (deleted.length === 0) {
-        return res.status(404).json({ success: false, message: 'Project not found' });
+        return res.status(404).json({ success: false, message: 'Project not found or already deleted' });
       }
 
       return res.status(200).json({

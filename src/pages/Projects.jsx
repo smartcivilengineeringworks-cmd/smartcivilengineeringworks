@@ -1,21 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, MapPin, Layers, CheckCircle } from 'lucide-react';
-import { projectsList as initialProjects } from '../data/projectsData';
-import { api } from '../services/api';
+import { X, Calendar, MapPin, Layers, CheckCircle, Loader2 } from 'lucide-react';
+import { useProjects } from '../context/ProjectsContext';
 
 const Projects = () => {
-  const [projects, setProjects] = useState(initialProjects);
+  const { projects, loading } = useProjects();
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
-
-  useEffect(() => {
-    api.getProjects().then((data) => {
-      if (data && data.length > 0) {
-        setProjects(data);
-      }
-    });
-  }, []);
 
   const categories = ['All', 'Ongoing', 'Commercial', 'Residential', 'Infrastructure', 'Structural'];
 
@@ -25,8 +16,8 @@ const Projects = () => {
     ? projects.filter(proj => proj.status === 'Ongoing')
     : projects.filter(proj => proj.category === activeCategory);
 
-  // Use a local project image for the header background (e.g. Musanze mixed use)
-  const headerBgImage = projects.find(p => p.id === 17)?.image || '';
+  // Header background image from active projects
+  const headerBgImage = projects.find(p => p.id === 17)?.image || projects[0]?.image || '';
 
   return (
     <div className="pt-16 font-sans bg-warm-bg text-slate-700">
@@ -70,7 +61,23 @@ const Projects = () => {
 
       {/* Projects Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-warm-bg">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {loading && projects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 space-y-3">
+            <Loader2 className="h-8 w-8 text-accent animate-spin" />
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+              Connecting to Neon Database...
+            </p>
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-slate-200/60 p-8 max-w-lg mx-auto">
+            <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
+              <Layers className="h-6 w-6" />
+            </div>
+            <p className="text-base font-bold text-navy uppercase tracking-wide">No Projects Found</p>
+            <p className="text-xs text-slate-400 mt-1">There are no projects currently registered under this category.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
@@ -145,7 +152,8 @@ const Projects = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </section>
 
       {/* Project Details Modal Sheet */}
