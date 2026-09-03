@@ -79,7 +79,11 @@ export default async function handler(req, res) {
       });
     } catch (error) {
       console.error('Auth error:', error);
-      return res.status(500).json({ success: false, message: 'Server error during authentication' });
+      return res.status(500).json({
+        success: false,
+        message: 'Database error: ' + (error.message || String(error)),
+        error: error.message || String(error)
+      });
     }
   }
 
