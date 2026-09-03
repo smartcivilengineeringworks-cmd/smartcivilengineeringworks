@@ -3,7 +3,7 @@ import { Calculator, CheckCircle2 } from 'lucide-react';
 
 const CostCalculator = () => {
   const [projectType, setProjectType] = useState('residential');
-  const [scale, setScale] = useState(300); // default to 300 sqm
+  const [scale, setScale] = useState(300); // sqm
   const [terrain, setTerrain] = useState('flat');
 
   const [estimates, setEstimates] = useState({
@@ -15,7 +15,7 @@ const CostCalculator = () => {
   });
 
   useEffect(() => {
-    // Exact rate: 1,000 USD (1k) per 300 sqm
+    // 1k (1,000 USD) per 300 sqm
     const baseCost = Math.round((scale / 300) * 1000);
 
     const studiesCost = Math.round(baseCost * 0.15); // 15%
@@ -40,20 +40,15 @@ const CostCalculator = () => {
         {/* Left Side: Inputs */}
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-base font-display font-black text-navy uppercase tracking-wide flex items-center space-x-2">
-                <Calculator className="h-5 w-5 text-accent" />
-                <span>Project Cost Estimator</span>
-              </h3>
-              <span className="text-[10px] font-bold text-accent bg-accent/10 border border-accent/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                $1,000 / 300 SQM
-              </span>
-            </div>
+            <h3 className="text-base font-display font-black text-navy uppercase tracking-wide flex items-center space-x-2">
+              <Calculator className="h-5 w-5 text-accent" />
+              <span>Project Cost Estimator</span>
+            </h3>
             <p className="text-slate-500 text-xs font-medium leading-relaxed">
               Input your planned construction parameters to receive an instantly calculated fee proposal estimate for our design and engineering consultancy services.
             </p>
           </div>
- 
+
           <div className="space-y-4 text-xs font-semibold">
             {/* Project Type */}
             <div className="space-y-2">
@@ -80,7 +75,7 @@ const CostCalculator = () => {
                 ))}
               </div>
             </div>
- 
+
             {/* Sizing scale slider */}
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs">
@@ -96,23 +91,6 @@ const CostCalculator = () => {
                 onChange={(e) => setScale(Number(e.target.value))}
                 className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent"
               />
-              {/* Quick Size Presets */}
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {[150, 300, 600, 900].map((sqm) => (
-                  <button
-                    key={sqm}
-                    type="button"
-                    onClick={() => setScale(sqm)}
-                    className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${
-                      scale === sqm
-                        ? 'bg-accent text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {sqm} SQM (${Math.round((sqm / 300) * 1000).toLocaleString()})
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Terrain Slope */}
@@ -147,10 +125,7 @@ const CostCalculator = () => {
         <div className="lg:col-span-6 bg-navy text-white p-6 md:p-8 rounded-2xl relative overflow-hidden shadow-2xl border border-white/5">
           <div className="absolute top-0 right-0 h-28 w-28 bg-accent/10 rounded-full filter blur-xl pointer-events-none" />
           
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-slate-350 font-bold tracking-wider uppercase text-xs">Estimated Fees Breakdown</h4>
-            <span className="text-[10px] font-bold text-accent bg-accent/15 px-2 py-0.5 rounded-full uppercase">1k / 300 SQM</span>
-          </div>
+          <h4 className="text-slate-350 font-bold tracking-wider uppercase text-xs mb-4">Estimated Fees Breakdown</h4>
           
           <div className="space-y-4 text-xs sm:text-sm font-semibold">
             {/* Studies */}
@@ -186,13 +161,13 @@ const CostCalculator = () => {
 
           <div className="mt-6 flex items-start space-x-2 text-[9px] text-slate-400 leading-normal font-medium">
             <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-            <span>Note: Rate is strictly 1,000 USD (1k) per 300 SQM. Standard municipality stamps and soil lab core crashing fees are calculated separately.</span>
+            <span>Note: This is a planning estimate. Standard municipality stamps and soil lab core crashing fees are calculated separately.</span>
           </div>
         </div>
- 
+
       </div>
     </div>
   );
 };
- 
+
 export default CostCalculator;
