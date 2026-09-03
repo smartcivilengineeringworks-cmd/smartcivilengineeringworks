@@ -1,22 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar, MapPin, Layers, CheckCircle } from 'lucide-react';
-import { projectsList } from '../data/projectsData';
+import { projectsList as initialProjects } from '../data/projectsData';
+import { api } from '../services/api';
 
 const Projects = () => {
+  const [projects, setProjects] = useState(initialProjects);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    api.getProjects().then((data) => {
+      if (data && data.length > 0) {
+        setProjects(data);
+      }
+    });
+  }, []);
 
   const categories = ['All', 'Ongoing', 'Commercial', 'Residential', 'Infrastructure', 'Structural'];
 
   const filteredProjects = activeCategory === 'All' 
-    ? projectsList 
+    ? projects 
     : activeCategory === 'Ongoing'
-    ? projectsList.filter(proj => proj.status === 'Ongoing')
-    : projectsList.filter(proj => proj.category === activeCategory);
+    ? projects.filter(proj => proj.status === 'Ongoing')
+    : projects.filter(proj => proj.category === activeCategory);
 
   // Use a local project image for the header background (e.g. Musanze mixed use)
-  const headerBgImage = projectsList.find(p => p.id === 17)?.image || '';
+  const headerBgImage = projects.find(p => p.id === 17)?.image || '';
 
   return (
     <div className="pt-16 font-sans bg-warm-bg text-slate-700">

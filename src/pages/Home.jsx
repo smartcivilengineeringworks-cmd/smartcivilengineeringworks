@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import Hero from '../components/Hero';
 import { projectsList } from '../data/projectsData';
+import { api } from '../services/api';
 import ServiceCard from '../components/ServiceCard';
 import PartnerTicker from '../components/PartnerTicker';
 import CostCalculator from '../components/CostCalculator';
@@ -22,6 +23,14 @@ import {
 } from 'lucide-react';
 
 const Home = () => {
+  const [projects, setProjects] = useState(projectsList);
+
+  useEffect(() => {
+    api.getProjects().then((data) => {
+      if (data && data.length > 0) setProjects(data);
+    });
+  }, []);
+
   const featuredServices = [
     {
       icon: Compass,
@@ -261,9 +270,9 @@ const Home = () => {
         {/* 3 Featured Projects preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            projectsList.find(p => p.id === 5),
-            projectsList.find(p => p.id === 1),
-            projectsList.find(p => p.id === 7)
+            projects.find(p => p.id === 5),
+            projects.find(p => p.id === 1),
+            projects.find(p => p.id === 7)
           ].filter(Boolean).map((project, idx) => (
             <motion.div
               key={idx}

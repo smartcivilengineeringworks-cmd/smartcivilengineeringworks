@@ -100,57 +100,51 @@ const Contact = () => {
 
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-    if (!accessKey || accessKey === 'your_access_key_here') {
-      setTimeout(() => {
-        setFormStatus({
-          submitting: false,
-          success: false,
-          error: 'Web3Forms Access Key is missing or default placeholder is used. Please check your .env file.'
-        });
-      }, 1000);
-      return;
-    }
-
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // 1. Save lead to Neon PostgreSQL database
+      const neonRes = await fetch('/api/inquiries', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          access_key: accessKey,
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           subject: formData.subject,
-          message: formData.message,
-          from_name: 'Smart Civil Engineering Works Website'
+          message: formData.message
         })
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setFormStatus({
-          submitting: false,
-          success: true,
-          error: null
-        });
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: 'General Inquiry',
-          message: ''
-        });
-      } else {
-        setFormStatus({
-          submitting: false,
-          success: false,
-          error: data.message || 'Form submission failed. Please try again.'
-        });
+      // 2. Also forward to Web3Forms if valid key is set
+      if (accessKey && accessKey !== 'YOUR_ACCESS_KEY_HERE') {
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+            from_name: 'Smart Civil Engineering Works Website'
+          })
+        }).catch((e) => console.warn('Web3Forms forwarding error:', e));
       }
+
+      setFormStatus({
+        submitting: false,
+        success: true,
+        error: null
+      });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: 'General Inquiry',
+        message: ''
+      });
     } catch (err) {
       setFormStatus({
         submitting: false,
