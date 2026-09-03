@@ -18,7 +18,10 @@ import {
   X,
   AlertCircle,
   RefreshCw,
-  Sliders
+  Sliders,
+  Globe,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { api } from '../../services/api';
 
@@ -76,6 +79,7 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
   const [projectForm, setProjectForm] = useState(emptyProjectForm);
+  const [imageSourceTab, setImageSourceTab] = useState('external'); // 'external' | 'upload' | 'library'
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -140,6 +144,7 @@ const AdminDashboard = () => {
   const openAddModal = () => {
     setEditingProject(null);
     setProjectForm(emptyProjectForm);
+    setImageSourceTab('external');
     setFormError('');
     setIsModalOpen(true);
   };
@@ -147,12 +152,21 @@ const AdminDashboard = () => {
   // Open Edit Modal
   const openEditModal = (project) => {
     setEditingProject(project);
+    const imgUrl = project.image || project.image_url || defaultImages[0];
+    if (imgUrl.startsWith('http')) {
+      setImageSourceTab('external');
+    } else if (imgUrl.startsWith('data:')) {
+      setImageSourceTab('upload');
+    } else {
+      setImageSourceTab('library');
+    }
+
     setProjectForm({
       id: project.id,
       title: project.title,
       category: project.category,
       description: project.desc || project.description || '',
-      image_url: project.image || project.image_url || defaultImages[0],
+      image_url: imgUrl,
       year: project.year || '',
       status: project.status || 'Completed',
       progress: project.progress !== undefined ? project.progress : 100,
@@ -777,38 +791,162 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              {/* Image URL with Preview */}
-              <div className="space-y-1.5">
-                <label className="text-slate-500 uppercase tracking-wider text-[10px]">
-                  Project Image (URL or path)
-                </label>
-                <input
-                  type="text"
-                  value={projectForm.image_url}
-                  onChange={(e) => setProjectForm({ ...projectForm, image_url: e.target.value })}
-                  placeholder="/projects/filename.png or https://..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-navy focus:outline-none focus:border-accent"
-                />
+              {/* Image Source Selector */}
+              <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/60">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <label className="text-slate-500 uppercase tracking-wider text-[10px] font-bold block">
+                      Project Image Source
+                    </label>
+                    <span className="text-[10px] text-slate-400">Choose how to add your project picture:</span>
+                  </div>
 
-                {/* Quick image picker */}
-                <div className="pt-1">
-                  <span className="text-[9px] text-slate-400 block mb-1">Select from company 3D library:</span>
-                  <div className="flex gap-2 overflow-x-auto pb-2">
-                    {defaultImages.slice(0, 8).map((img, i) => (
-                      <img
-                        key={i}
-                        src={img}
-                        alt="option"
-                        onClick={() => setProjectForm({ ...projectForm, image_url: img })}
-                        className={`h-10 w-14 object-cover rounded-lg border-2 cursor-pointer transition-all ${
-                          projectForm.image_url === img
-                            ? 'border-accent scale-105 shadow-md'
-                            : 'border-slate-200 opacity-60 hover:opacity-100'
-                        }`}
-                      />
-                    ))}
+                  <div className="flex space-x-1 bg-slate-200/70 p-1 rounded-xl text-[10px] font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('external')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                        imageSourceTab === 'external'
+                          ? 'bg-white text-navy shadow-sm'
+                          : 'text-slate-600 hover:text-navy'
+                      }`}
+                    >
+                      <Globe className="h-3 w-3 text-accent" />
+                      <span>External Link</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('upload')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                        imageSourceTab === 'upload'
+                          ? 'bg-white text-navy shadow-sm'
+                          : 'text-slate-600 hover:text-navy'
+                      }`}
+                    >
+                      <Upload className="h-3 w-3 text-accent" />
+                      <span>Upload File</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setImageSourceTab('library')}
+                      className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                        imageSourceTab === 'library'
+                          ? 'bg-white text-navy shadow-sm'
+                          : 'text-slate-600 hover:text-navy'
+                      }`}
+                    >
+                      <ImageIcon className="h-3 w-3 text-accent" />
+                      <span>3D Library</span>
+                    </button>
                   </div>
                 </div>
+
+                {/* 1. EXTERNAL LINK TAB */}
+                {imageSourceTab === 'external' && (
+                  <div className="space-y-2 pt-1">
+                    <label className="text-slate-500 uppercase tracking-wider text-[9px] font-bold block">
+                      Insert Direct External Image URL
+                    </label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input
+                        type="url"
+                        value={projectForm.image_url}
+                        onChange={(e) => setProjectForm({ ...projectForm, image_url: e.target.value })}
+                        placeholder="https://images.unsplash.com/... or https://i.imgur.com/... or Google Drive direct link"
+                        className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-navy focus:outline-none focus:border-accent text-xs"
+                      />
+                    </div>
+                    <p className="text-[10px] text-slate-400 leading-relaxed">
+                      💡 <strong>External Image Tip:</strong> You can paste any image link from Google Drive, Dropbox, Cloudinary, Imgur, AWS S3, Unsplash, or any public web address.
+                    </p>
+                  </div>
+                )}
+
+                {/* 2. DIRECT DEVICE UPLOAD TAB */}
+                {imageSourceTab === 'upload' && (
+                  <div className="space-y-2 pt-1">
+                    <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 hover:border-accent rounded-xl bg-white cursor-pointer transition-colors group">
+                      <Upload className="h-6 w-6 text-slate-400 group-hover:text-accent mb-1 transition-colors" />
+                      <span className="text-xs font-bold text-slate-700 group-hover:text-navy">
+                        Click to select image from your device
+                      </span>
+                      <span className="text-[10px] text-slate-400 mt-0.5">PNG, JPG, WEBP formats supported</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setProjectForm({ ...projectForm, image_url: reader.result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {/* 3. 3D LIBRARY TAB */}
+                {imageSourceTab === 'library' && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[9px] text-slate-500 uppercase font-bold tracking-wider block">
+                      Select from Company 3D Renders:
+                    </span>
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {defaultImages.map((img, i) => (
+                        <img
+                          key={i}
+                          src={img}
+                          alt="option"
+                          onClick={() => setProjectForm({ ...projectForm, image_url: img })}
+                          className={`h-12 w-16 object-cover rounded-lg border-2 cursor-pointer transition-all shrink-0 ${
+                            projectForm.image_url === img
+                              ? 'border-accent scale-105 shadow-md ring-2 ring-accent/30'
+                              : 'border-slate-200 opacity-60 hover:opacity-100'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* LIVE PREVIEW BOX */}
+                {projectForm.image_url && (
+                  <div className="flex items-center space-x-3 p-2.5 bg-white rounded-xl border border-slate-200 mt-2">
+                    <div className="h-14 w-20 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                      <img
+                        src={projectForm.image_url}
+                        alt="Preview"
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = defaultImages[0];
+                        }}
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider flex items-center space-x-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        <span>Image Preview Active</span>
+                      </span>
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">{projectForm.image_url}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProjectForm({ ...projectForm, image_url: '' })}
+                      className="text-[10px] text-rose-500 hover:text-rose-700 font-bold px-2 py-1 cursor-pointer hover:bg-rose-50 rounded-lg transition-colors"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Scope & Technical Details */}
