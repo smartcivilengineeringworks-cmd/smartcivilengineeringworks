@@ -191,5 +191,20 @@ export const api = {
       body: JSON.stringify({ id, is_read: true })
     });
     return await res.json();
+  },
+
+  // Delete inquiry
+  async deleteInquiry(id, token) {
+    const res = await fetch(`${API_BASE}/inquiries?id=${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ id: Number(id) })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Failed to delete inquiry');
+    return data;
   }
 };

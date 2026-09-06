@@ -3,7 +3,7 @@ import { verifyAdminToken } from './auth.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -73,6 +73,29 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error('Update inquiry error:', error);
       return res.status(500).json({ success: false, message: 'Failed to update inquiry' });
+    }
+  }
+
+  // 4. DELETE INQUIRY (Admin Protected)
+  if (req.method === 'DELETE') {
+    const admin = verifyAdminToken(req);
+    if (!admin) {
+      return res.status(401).json({ success: false, message: 'Admin authentication required' });
+    }
+
+    try {
+      const id = req.query?.id || req.body?.id;
+      if (!id) {
+        return res.status(400).json({ success: false, message: 'Inquiry ID required' });
+      }
+
+      await sql`
+        DELETE FROM inquiries WHERE id = ${Number(id)};
+      `;
+      return res.status(200).json({ success: true, message: 'Inquiry deleted successfully' });
+    } catch (error) {
+      console.error('Delete inquiry error:', error);
+      return res.status(500).json({ success: false, message: 'Failed to delete inquiry' });
     }
   }
 

@@ -60,4 +60,22 @@ router.put('/', verifyAdmin, async (req, res) => {
   }
 });
 
+// 4. DELETE INQUIRY (Admin Protected)
+router.delete('/:id?', verifyAdmin, async (req, res) => {
+  try {
+    const id = req.params.id || req.query.id || req.body?.id;
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'Inquiry ID required' });
+    }
+
+    await sql`
+      DELETE FROM inquiries WHERE id = ${Number(id)};
+    `;
+    return res.status(200).json({ success: true, message: 'Inquiry deleted successfully' });
+  } catch (error) {
+    console.error('Delete inquiry error:', error);
+    return res.status(500).json({ success: false, message: 'Failed to delete inquiry' });
+  }
+});
+
 export default router;
