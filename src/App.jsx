@@ -20,6 +20,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 
 // Components
 import CookieConsent from './components/CookieConsent';
+import WhatsAppButton from './components/WhatsAppButton';
 import { ProjectsProvider } from './context/ProjectsContext';
 
 // ScrollToTop behavior on page transition
@@ -65,8 +66,9 @@ const AppContent = () => {
         </Routes>
       </main>
 
-      {/* Show Footer & Cookie consent only for public routes */}
+      {/* Show Footer, WhatsApp button & Cookie consent only for public routes */}
       {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <WhatsAppButton />}
       {!isAdminRoute && <CookieConsent />}
     </div>
   );
