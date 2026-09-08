@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen } from 'lucide-react';
+import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen, FileDown } from 'lucide-react';
 import { leadershipTeam } from '../data/teamData';
 import { useProjects } from '../context/ProjectsContext';
 
@@ -104,6 +104,17 @@ const About = () => {
 
           <div className="border-y border-slate-200/60 py-4 italic text-accent font-sans bg-accent/5 rounded-xl text-xs sm:text-sm font-bold leading-relaxed text-center max-w-2xl mx-auto px-6 mt-4">
             “Delivering Complete Engineering Solutions from Concept to Completion”
+          </div>
+
+          <div className="pt-2 flex justify-center">
+            <a
+              href="/docs/SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
+              download="SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-navy hover:bg-accent text-white hover:text-white rounded-full font-sans text-xs font-bold tracking-wider uppercase transition-all shadow-md hover:shadow-lg hover:scale-[1.02]"
+            >
+              <FileDown className="h-4 w-4 text-accent" />
+              <span>Download Official Company Profile (PDF)</span>
+            </a>
           </div>
         </div>
       </section>
