@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen, FileDown } from 'lucide-react';
-import { leadershipTeam } from '../data/teamData';
+import { leadershipTeam, staffTeam } from '../data/teamData';
 import { useProjects } from '../context/ProjectsContext';
 
 const About = () => {
@@ -218,6 +218,57 @@ const About = () => {
                 <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-md font-medium">
                   {member.bio}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Engineering & Technical Staff Section */}
+      <section className="bg-warm-bg text-slate-700 py-12 md:py-16 border-t border-slate-200/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
+          <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
+            <span className="text-accent text-[10px] sm:text-xs font-bold tracking-widest uppercase bg-accent/10 px-3 py-1 rounded-full inline-block">
+              Technical Staff
+            </span>
+            <h2 className="text-2xl md:text-3xl font-serif font-black uppercase text-navy">
+              Engineering & Technical Specialists
+            </h2>
+            <p className="text-slate-500 text-xs sm:text-sm font-medium">
+              Multidisciplinary civil engineers, architects, quantity surveyors, and site supervisors delivering project perfection.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {staffTeam.map((member, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-slate-200/60 rounded-2xl p-6 flex flex-col justify-between hover:border-accent/40 transition-all duration-300 shadow-md group"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="h-12 w-12 rounded-xl bg-navy text-white flex items-center justify-center font-bold text-sm uppercase tracking-wider shrink-0 shadow-sm group-hover:bg-accent transition-colors">
+                      {member.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-black text-navy uppercase leading-tight group-hover:text-accent transition-colors">
+                        {member.name}
+                      </h3>
+                      <span className="text-[11px] text-accent font-bold uppercase tracking-wider block">
+                        {member.role}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-slate-600 text-xs leading-relaxed font-medium">
+                    {member.bio}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold uppercase tracking-wider">
+                  <span>Department</span>
+                  <span className="text-navy font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">{member.department}</span>
+                </div>
               </div>
             ))}
           </div>
