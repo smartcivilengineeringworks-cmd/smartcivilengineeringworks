@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Calculator, CheckCircle2, ArrowRight } from 'lucide-react';
 
 const typeMultipliers = {
   residential: 1.0,
@@ -57,6 +58,22 @@ const CostCalculator = () => {
       return `${(usdAmount * RWF_RATE).toLocaleString()} RWF`;
     }
     return `$${usdAmount.toLocaleString()}`;
+  };
+
+  const navigate = useNavigate();
+
+  const handleRequestQuote = () => {
+    navigate('/contact', {
+      state: {
+        calculatorEstimate: {
+          projectType,
+          scale,
+          terrain,
+          estimatedTotal: formatPrice(estimates.total),
+          currency
+        }
+      }
+    });
   };
 
   return (
@@ -211,7 +228,17 @@ const CostCalculator = () => {
             </div>
           </div>
 
-          <div className="mt-6 flex items-start space-x-2 text-[9px] text-slate-400 leading-normal font-medium">
+          {/* Action Button */}
+          <button
+            type="button"
+            onClick={handleRequestQuote}
+            className="w-full mt-5 py-3 px-4 bg-accent hover:bg-white text-navy font-bold uppercase text-xs tracking-wider rounded-xl transition-all duration-300 shadow-md flex items-center justify-center space-x-2 group hover:scale-[1.02] cursor-pointer"
+          >
+            <span>Request Formal Quote with this Estimate</span>
+            <ArrowRight className="h-4 w-4 text-navy transition-transform group-hover:translate-x-1" />
+          </button>
+
+          <div className="mt-5 flex items-start space-x-2 text-[9px] text-slate-400 leading-normal font-medium">
             <CheckCircle2 className="h-4 w-4 text-accent shrink-0 mt-0.5" />
             <span>Note: This is a planning estimate. Standard municipality stamps and soil lab core crashing fees are calculated separately.</span>
           </div>

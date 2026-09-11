@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Mail,
   Phone,
@@ -28,6 +28,7 @@ const InstagramIcon = () => (
 
 const Contact = () => {
   const { projects } = useProjects();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,6 +36,18 @@ const Contact = () => {
     subject: 'General Inquiry',
     message: ''
   });
+
+  useEffect(() => {
+    if (location.state?.calculatorEstimate) {
+      const { projectType, scale, terrain, estimatedTotal } = location.state.calculatorEstimate;
+      const typeLabel = projectType ? projectType.charAt(0).toUpperCase() + projectType.slice(1) : 'Construction';
+      setFormData(prev => ({
+        ...prev,
+        subject: `Cost Estimate: ${typeLabel} Project (${scale} SQM)`,
+        message: `Hello Smart Civil Engineering Works Ltd,\n\nI calculated an initial fee proposal using your online cost estimator for the following project specifications:\n- Construction Type: ${typeLabel}\n- Estimated Surface Area: ${scale} SQM\n- Terrain Slope: ${terrain}\n- Estimated Consultancy: ${estimatedTotal}\n\nPlease review these details and prepare a formal quotation for site investigation, architectural drawings, structural engineering, and supervision.`
+      }));
+    }
+  }, [location.state]);
 
   const [botcheck, setBotcheck] = useState(false);
 
