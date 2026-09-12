@@ -1,20 +1,50 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, MapPin, Layers, CheckCircle, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { X, Calendar, MapPin, Layers, CheckCircle, Loader2, Search } from 'lucide-react';
 import { useProjects } from '../context/ProjectsContext';
 
 const Projects = () => {
   const { projects, loading } = useProjects();
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const categoryParam = searchParams.get('category') || 'All';
+  const queryParam = searchParams.get('q') || '';
+
+  const [activeCategory, setActiveCategory] = useState(categoryParam);
+  const [searchQuery, setSearchQuery] = useState(queryParam);
   const [selectedProject, setSelectedProject] = useState(null);
 
   const categories = ['All', 'Ongoing', 'Commercial', 'Residential', 'Infrastructure', 'Structural'];
 
-  const filteredProjects = activeCategory === 'All' 
-    ? projects 
-    : activeCategory === 'Ongoing'
-    ? projects.filter(proj => proj.status === 'Ongoing')
-    : projects.filter(proj => proj.category === activeCategory);
+  const updateFilters = (newCat, newQuery) => {
+    setActiveCategory(newCat);
+    setSearchQuery(newQuery);
+    const params = {};
+    if (newCat && newCat !== 'All') params.category = newCat;
+    if (newQuery && newQuery.trim()) params.q = newQuery.trim();
+    setSearchParams(params, { replace: true });
+  };
+
+  const filteredProjects = projects.filter((proj) => {
+    const matchesCategory =
+      activeCategory === 'All'
+        ? true
+        : activeCategory === 'Ongoing'
+        ? proj.status === 'Ongoing'
+        : proj.category === activeCategory;
+
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      !q ||
+      proj.title?.toLowerCase().includes(q) ||
+      proj.location?.toLowerCase().includes(q) ||
+      proj.category?.toLowerCase().includes(q) ||
+      proj.scope?.toLowerCase().includes(q) ||
+      proj.desc?.toLowerCase().includes(q);
+
+    return matchesCategory && matchesSearch;
+  });
 
   // Header background image from active projects
   const headerBgImage = projects.find(p => p.id === 17)?.image || projects[0]?.image || '';
@@ -40,13 +70,36 @@ const Projects = () => {
         </div>
       </section>
 
-      {/* Filter Tabs */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      {/* Search & Filter Tabs */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-5">
+        {/* Live Search Bar */}
+        <div className="max-w-md mx-auto relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => updateFilters(activeCategory, e.target.value)}
+            placeholder="Search projects by title, district, or scope..."
+            className="w-full pl-11 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-full text-xs font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent shadow-xs transition-all"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => updateFilters(activeCategory, '')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Category Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 border-b border-slate-200/50 pb-4">
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => updateFilters(cat, searchQuery)}
               className={`px-5 py-2 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-200 ${
                 activeCategory === cat
                   ? 'bg-accent text-white shadow-lg shadow-accent/20'
