@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Compass, Target, Users, HardHat, Award, BookOpen, FileDown } from 'lucide-react';
 import { leadershipTeam, staffTeam } from '../data/teamData';
 import { useProjects } from '../context/ProjectsContext';
+import RwandaProjectMap from '../components/RwandaProjectMap';
 
 const About = () => {
   const { projects } = useProjects();
@@ -187,6 +188,13 @@ const About = () => {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Rwanda Geographic Coverage Section */}
+      <section className="bg-white py-12 md:py-16 border-t border-slate-200/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <RwandaProjectMap />
         </div>
       </section>
 
