@@ -116,7 +116,7 @@ const Contact = () => {
 
     try {
       // 1. Save lead to Neon PostgreSQL database
-      const neonRes = await fetch('/api/inquiries', {
+      await fetch('/api/inquiries', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -160,6 +160,7 @@ const Contact = () => {
         message: ''
       });
     } catch (err) {
+      console.error('Contact submission error:', err);
       setFormStatus({
         submitting: false,
         success: false,

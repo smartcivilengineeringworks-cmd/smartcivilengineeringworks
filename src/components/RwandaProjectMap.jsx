@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Building2, CheckCircle2, ChevronRight, Navigation } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Navigation } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const regionsData = [

@@ -1,5 +1,3 @@
-import { Compass, Building2, Route, Boxes, ClipboardCheck, HardHat } from 'lucide-react';
-
 export const serviceCategories = [
   {
     id: 'studies',

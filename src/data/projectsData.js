@@ -9,7 +9,6 @@ import imgG1Res from '../images/projects/G+1 Residential House — Residential B
 import imgRebero from '../images/projects/G+1 Residential Houses (Rebero Village) — Residential Development.png';
 import imgG1Twin from '../images/projects/G+1 Twin Residential House — Residential Development.png';
 import imgG2Res2 from '../images/projects/G+2 Residential House (2).png';
-import imgG2Res3 from '../images/projects/G+2 Residential House (3).png';
 import imgG2ResB from '../images/projects/G+2 Residential House — Residential Building (2).png';
 import imgG2ResC from '../images/projects/G+2 Residential House — Residential Building (3).png';
 import imgG2ResA from '../images/projects/G+2 Residential House — Residential Building.png';
