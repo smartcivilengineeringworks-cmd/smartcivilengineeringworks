@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ShieldCheck, FileDown } from 'lucide-react';
+import { Menu, X, Phone, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../images/civil-logo-small.png';
 
@@ -76,21 +76,10 @@ const Navbar = () => {
               </NavLink>
             ))}
             
-            {/* Company Profile PDF */}
-            <a
-              href="/docs/SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-              download="SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-              className="flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold tracking-wider uppercase text-slate-600 hover:text-navy hover:bg-slate-100 border border-slate-200 rounded-full transition-all"
-              title="Download Official Company Profile (PDF)"
-            >
-              <FileDown className="h-3.5 w-3.5 text-accent" />
-              <span>Profile</span>
-            </a>
-
             {/* Contact CTA */}
             <NavLink
               to="/contact"
-              className="flex items-center space-x-2 px-6 py-2.5 text-xs font-bold tracking-wider uppercase bg-accent hover:bg-navy text-white hover:text-white rounded-full transition-all duration-300 shadow-md shadow-accent/15 hover:scale-[1.02]"
+              className="ml-8 flex items-center space-x-2 px-6 py-2.5 text-xs font-bold tracking-wider uppercase bg-accent hover:bg-navy text-white hover:text-white rounded-full transition-all duration-300 shadow-md shadow-accent/15 hover:scale-[1.02]"
             >
               <Phone className="h-3.5 w-3.5" />
               <span>Contact us</span>
@@ -164,18 +153,9 @@ const Navbar = () => {
                 <span>Contact us</span>
               </NavLink>
 
-              <a
-                href="/docs/SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-                download="SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-                className="flex items-center justify-center space-x-2 w-full mt-2 px-4 py-2.5 bg-slate-50 text-slate-700 font-bold uppercase text-[11px] tracking-wider rounded-xl hover:bg-slate-100 transition-all border border-slate-200"
-              >
-                <FileDown className="h-4 w-4 text-accent" />
-                <span>Company Profile (PDF)</span>
-              </a>
-
               <NavLink
                 to="/admin/login"
-                className="flex items-center justify-center space-x-2 w-full mt-2 px-4 py-2.5 bg-slate-100 text-slate-700 font-bold uppercase text-[11px] tracking-wider rounded-xl hover:bg-navy hover:text-white transition-all border border-slate-200"
+                className="flex items-center justify-center space-x-2 w-full mt-2.5 px-4 py-2.5 bg-slate-100 text-slate-700 font-bold uppercase text-[11px] tracking-wider rounded-xl hover:bg-navy hover:text-white transition-all border border-slate-200"
               >
                 <ShieldCheck className="h-4 w-4 text-accent" />
                 <span>Manager Admin Portal</span>

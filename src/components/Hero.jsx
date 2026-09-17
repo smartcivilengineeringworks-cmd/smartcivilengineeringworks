@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle, FileDown } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import heroSlide1 from '../images/projects/Musanze Mixed Use Complex — Mixed Use Development.png';
 import heroSlide2 from '../images/projects/G+3 Residential Apartment — Residential  Multi-storey.png';
 import heroSlide3 from '../images/projects/Nyabyondo Commercial Building — Commercial Building.png';
@@ -127,14 +127,6 @@ const Hero = () => {
             >
               Request Consultation
             </NavLink>
-            <a
-              href="/docs/SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-              download="SMART-CIVIL-ENGINEERING-WORKS-COMPANY-PROFILE.pdf"
-              className="flex items-center space-x-2 px-7 py-3.5 bg-slate-900/60 hover:bg-white text-white hover:text-navy text-xs font-bold tracking-widest uppercase rounded-full border border-white/20 hover:border-white transition-all duration-300 backdrop-blur-md hover:scale-[1.02]"
-            >
-              <FileDown className="h-4 w-4 text-accent" />
-              <span>Company Profile</span>
-            </a>
           </motion.div>
         </div>
       </div>
